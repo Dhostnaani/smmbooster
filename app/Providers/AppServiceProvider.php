@@ -2,18 +2,18 @@
 
 namespace App\Providers;
 
-use Stripe\Stripe;
-use App\Models\Setting;
 use App\Models\PaymentMethod;
-use App\Models\UserNotification;
+use App\Models\Setting;
+Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Notifications\Messages\MailMessage;
+use Stripe\Stripe;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,10 +30,14 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
+		 * @param UrlGenerator $url
      * @return void
      */
-    public function boot()
+    public function boot(UrlGenerator $url)
     {
+			if (env('APP_ENV') == 'production') {
+            $url->forceScheme('https');
+      }
 
         $this->init();
     }
